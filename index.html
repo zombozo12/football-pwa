@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#00897B">
+    <meta name="description" content="Football PWA dicoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/assets/img/ms-icon-144x144.png">
+    <meta name="google-signin-client_id" content="790958902989-fo6lsplepbhp6bu2elps2ark8qr89a43.apps.googleusercontent.com">
+    <title>Football PWA</title>
+
+    <!--icons & manifest-->
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/img/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/img/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/img/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/img/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/img/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/img/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/icons/favicon-16x16.png">
+
+    <!-- styles -->
+    <link rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <nav class="blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a href="/" class="brand-logo" id="logo-container">wigunarrr.dev</a>
+            <a href="#" class="sidenav-trigger" data-target="nav-mobile">☰</a>
+
+            <ul class="topnav right hide-on-med-and-down"></ul>
+            <ul class="sidenav" id="nav-mobile"></ul>
+        </div>
+    </nav>
+
+    <div class="container" id="body-content">
+        <h1 class="header" id="title"></h1>
+        <div class="row">
+            <div class="col s12 m12" id="content">
+            </div>
+        </div>
+    </div>
+
+    <!--scripts-->
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-messaging.js"></script>
+    <script>
+        let firebaseConfig = {
+            apiKey: "AIzaSyA_u7j6coHrA_ir9KqND0ocegJf5Dsq_H8",
+            authDomain: "dicoding-pwa-wigunarrr.firebaseapp.com",
+            projectId: "dicoding-pwa-wigunarrr",
+            storageBucket: "dicoding-pwa-wigunarrr.appspot.com",
+            messagingSenderId: "790958902989",
+            appId: "1:790958902989:web:f60a1984e9c07843b9a384",
+            measurementId: "G-QFBWVR5W3H"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        const messaging = firebase.messaging()
+        messaging.usePublicVapidKey('BGsp3j8F9q21PzAl94l_OXOrWuS3UPHJTXlt3jG1vwoWQAT5ONYf0AnoKn_F33UCiMrd2aMz2WIeu5py4W304xA')
+
+    </script>
+    <script type="text/javascript" src="/node_modules/materialize-css/dist/js/materialize.min.js"></script>
+    <script type="text/javascript" src="/node_modules/idb/lib/idb.js"></script>
+    <script type="text/javascript" src="/assets/js/api.js"></script>
+    <script type="text/javascript" src="/assets/js/db.js"></script>
+    <script type="text/javascript" src="/assets/js/master.js"></script>
+    <script type="text/javascript" src="/assets/js/nav.js"></script>
+
+    <script>
+        if("serviceWorker" in navigator){
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(() => {
+                    console.log('Worker: Registered.')
+                }).catch(() => {
+                    console.log('Worker: Failed.')
+                })
+
+                /*navigator.serviceWorker.register('/firebase-messaging-sw.js').then(() => {
+                    console.log('FCM: Registered.')
+                }).catch(() => {
+                    console.log('FCM: Failed.')
+                })*/
+            })
+
+            navigator.serviceWorker.ready.then(() => {
+                console.log('Worker', 'Already started')
+                push_permission()
+            })
+        }else{
+            console.log('Service worker doesn\'t supported in this browser')
+        }
+
+        let push_permission = () => {
+            if(!'Notification' in window) return
+            Notification.requestPermission().then(res => {
+                messaging.getToken().then(token => {
+                    console.log('Device Token', token)
+                })
+                if(res === 'denied') {console.log('Notification: Denied'); return}
+                if(res === 'default') {console.log('Notification: Disabled by default'); return}
+
+                console.log('Notification: Granted')
+                if(!'PushManager' in window) return
+
+                console.log('Notification: PushManager is exist')
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    let notif_options = {
+                        userVisibleOnly: true
+                    }
+                    registration.pushManager.subscribe(notif_options).then(subscribe => {
+                        console.log('Notification', `Endpoint: ${subscribe.endpoint}`)
+                        console.log('Notification', `p256dh hash: ${btoa(String.fromCharCode.apply(null, new Uint8Array(subscribe.getKey('p256dh'))))}`)
+                        console.log('Notification', `auth hash: ${btoa(String.fromCharCode.apply(null, new Uint8Array(subscribe.getKey('auth'))))}`)
+                    })
+                })
+            })
+        }
+    </script>
+
+
+</body>
+</html>

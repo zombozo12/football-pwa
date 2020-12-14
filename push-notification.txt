@@ -1,0 +1,13 @@
+curl -X POST \
+--header "Authorization: key=AAAAuCjTDs0:APA91bFrVt0dW_zP4sCBF57Y0ZVX4vI7o2XU-euNPAk3AgBcvDBaaLgL1XmxW0_iJGaWfoF_ixtZ80YpXgHLxGUakQt0TLwygek02wj_QoIqFM9UAZKaDxyo3L7VXMcEwWNMZG98ngYd" \
+--header Content-Type:"application/json" \
+https://fcm.googleapis.com/fcm/send \
+-d @- << EOF
+{
+  "data": {
+    "title":"test",
+    "body":"text message"
+    },
+  "to": "ada di console"
+}
+EOF
