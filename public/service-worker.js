@@ -21,14 +21,14 @@ const CACHED_URLS = [
     { url: '/assets/img/icons/favicon-16x16.png', revision: '1' },
 
     // css
-    { url: '/node_modules/materialize-css/dist/css/materialize.min.css', revision: '1' },
+    { url: '/assets/css/materialize.min.css', revision: '1' },
     { url: 'https://fonts.googleapis.com/icon?family=Material+Icons', revision: '1' },
     { url: "https://fonts.gstatic.com/s/materialicons/v55/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2", revision: '1' },
     { url: "https://fonts.gstatic.com/s/materialicons/v67/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2", revision: '1' },
 
     // scripts
-    { url: '/node_modules/materialize-css/dist/js/materialize.min.js', revision: '1' },
-    { url: '/node_modules/idb/lib/idb.js', revision: '1' },
+    { url: '/assets/js/materialize.min.js', revision: '1' },
+    { url: '/assets/js/idb.js', revision: '1' },
     { url: '/assets/js/nav.js', revision: '1' },
     { url: '/assets/js/db.js', revision: '1' },
     { url: '/assets/js/master.js', revision: '1' },
