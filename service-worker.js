@@ -21,6 +21,7 @@ const CACHED_URLS = [
 
     // css
     { url: '/assets/css/materialize.min.css', revision: '1' },
+    { url: '/assets/css/index.css', revision: '1' },
     { url: 'https://fonts.googleapis.com/icon?family=Material+Icons', revision: '1' },
     { url: "https://fonts.gstatic.com/s/materialicons/v55/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2", revision: '1' },
     { url: "https://fonts.gstatic.com/s/materialicons/v67/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2", revision: '1' },
