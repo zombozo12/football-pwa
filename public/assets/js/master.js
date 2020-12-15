@@ -3,8 +3,8 @@ let JSON_DATA = (data) => JSON.stringify(data).replace(/http:/g, 'https:')
 
 
 let load_standings = () => {
+    show_loader()
     let standings = get_standings()
-
     standings.then(data => {
         data = JSON.parse(JSON_DATA(data))
         let html_standings = ''
@@ -57,10 +57,12 @@ let load_standings = () => {
 
         document.getElementById('title').innerHTML = 'Standings'
         document.getElementById('content').innerHTML = html_standings
+        hide_loader()
     })
 }
 
 let load_matches = () => {
+    show_loader()
     let matches = get_matches()
     let html_matches = ''
     matches.then(data => {
@@ -99,10 +101,12 @@ let load_matches = () => {
 
         document.getElementById('title').innerHTML = 'Matches'
         document.getElementById('content').innerHTML = html_matches
+        hide_loader()
     })
 }
 
 let load_teams = () => {
+    show_loader()
     let teams = get_teams()
 
     teams.then(data => {
@@ -132,10 +136,12 @@ let load_teams = () => {
         html_teams += `<div class="row">${body}</div>`
         document.getElementById('title').innerHTML = 'Teams'
         document.getElementById('content').innerHTML = html_teams
+        hide_loader()
     })
 }
 
 let load_fav_match = () => {
+    show_loader()
     let fav_matches = get_fav_matches()
     fav_matches.then(matches => {
         let html_fav_match = '', body = ''
@@ -162,10 +168,12 @@ let load_fav_match = () => {
 
         document.getElementById('title').innerHTML = 'Favorite Matches'
         document.getElementById('content').innerHTML = html_fav_match
+        hide_loader()
     })
 }
 
 let load_fav_team = () => {
+    show_loader()
     let fav_teams = get_fav_teams()
     fav_teams.then(teams => {
         data_team = teams
@@ -194,9 +202,32 @@ let load_fav_team = () => {
         html_fav_team += `<div class="row">${body}</div>`
         document.getElementById('title').innerHTML = 'Favorite Teams'
         document.getElementById('content').innerHTML = html_fav_team
+        hide_loader()
     })
 }
 
+let show_loader = () => {
+    document.getElementById('loader').style.display = ''
+    document.getElementById('loader').innerHTML = `
+        <div class="preloader-wrapper big active loader">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    `
+}
+
+let hide_loader = () => {
+    document.getElementById('loader').style.display = 'none'
+}
 
 let group_by = function (xs, key) {
     return xs.reduce(function (rv, x) {
