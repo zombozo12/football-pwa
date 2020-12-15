@@ -28,7 +28,7 @@
 
     <!-- styles -->
     <link rel="stylesheet" href="/assets/css/materialize.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
     <nav class="blue lighten-1" role="navigation">
@@ -69,12 +69,6 @@
                 }).catch(() => {
                     console.log('Worker: Failed.')
                 })
-
-                /*navigator.serviceWorker.register('/firebase-messaging-sw.js').then(() => {
-                    console.log('FCM: Registered.')
-                }).catch(() => {
-                    console.log('FCM: Failed.')
-                })*/
             })
 
             navigator.serviceWorker.ready.then(() => {
