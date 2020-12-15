@@ -1,9 +1,12 @@
 let data_matches, data_team
+let JSON_DATA = (data) => JSON.stringify(data).replace(/http:/g, 'https:')
+
 
 let load_standings = () => {
     let standings = get_standings()
 
     standings.then(data => {
+        data = JSON.parse(JSON_DATA(data))
         let html_standings = ''
         data.standings.forEach(standing => {
             let body = ''
@@ -104,6 +107,7 @@ let load_teams = () => {
 
     teams.then(data => {
         let html_teams = '', body = ''
+        data = JSON.parse(JSON_DATA(data))
         data_team = data
         data.teams.forEach(team => {
             body += `
