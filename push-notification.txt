@@ -1,0 +1,13 @@
+curl -X POST \
+--header "Authorization: key=AAAAuCjTDs0:APA91bFrVt0dW_zP4sCBF57Y0ZVX4vI7o2XU-euNPAk3AgBcvDBaaLgL1XmxW0_iJGaWfoF_ixtZ80YpXgHLxGUakQt0TLwygek02wj_QoIqFM9UAZKaDxyo3L7VXMcEwWNMZG98ngYd" \
+--header Content-Type:"application/json" \
+https://fcm.googleapis.com/fcm/send \
+-d @- << EOF
+{
+  "data": {
+    "title":"test",
+    "body":"text message"
+    },
+  "to": "cWfO1J1sPj1dscCp4nFyWU:APA91bHX0tpRFzhY8BT6t71Xid02N6-iiMSOs6aYf5Ky5o5Z5dk9z8UD6NI8V6-xlPLvYp1xKR0lqFMRg6yznknPixQKtw32RUiaGyTuj9UQ0vmxchqUZFB3msE_-O0cfMMspugELPnl"
+}
+EOF

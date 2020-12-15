@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta charset="UTF-8">
+    <meta name="theme-color" content="#00897B">
+    <meta name="description" content="Football PWA dicoding">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/assets/img/ms-icon-144x144.png">
+    <meta name="google-signin-client_id" content="790958902989-fo6lsplepbhp6bu2elps2ark8qr89a43.apps.googleusercontent.com">
+    <title>Football PWA</title>
+
+    <!--icons & manifest-->
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/img/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/img/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/img/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/img/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/img/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/img/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/img/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/img/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/icons/favicon-16x16.png">
+
+    <!-- styles -->
+    <link rel="stylesheet" href="/assets/css/materialize.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <nav class="blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a href="#home" class="brand-logo" id="logo-container">wigunarrr.dev</a>
+            <a href="#" class="sidenav-trigger" data-target="nav-mobile">☰</a>
+
+            <ul class="topnav right hide-on-med-and-down"></ul>
+            <ul class="sidenav" id="nav-mobile"></ul>
+        </div>
+    </nav>
+
+    <div class="container" id="body-content">
+        <h1 class="header" id="title"></h1>
+        <div class="row">
+            <div class="col s12 m12" id="content">
+            </div>
+        </div>
+    </div>
+
+    <!--scripts-->
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-messaging.js"></script>
+    <script src="/assets/js/fcm-config.js"></script>
+    <script type="text/javascript" src="/assets/js/materialize.min.js"></script>
+    <script type="text/javascript" src="/assets/js/idb.js"></script>
+    <script type="text/javascript" src="/assets/js/api.js"></script>
+    <script type="text/javascript" src="/assets/js/db.js"></script>
+    <script type="text/javascript" src="/assets/js/master.js"></script>
+    <script type="text/javascript" src="/assets/js/nav.js"></script>
+
+    <script>
+        if("serviceWorker" in navigator){
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(() => {
+                    console.log('Worker: Registered.')
+                }).catch(() => {
+                    console.log('Worker: Failed.')
+                })
+
+                /*navigator.serviceWorker.register('/firebase-messaging-sw.js').then(() => {
+                    console.log('FCM: Registered.')
+                }).catch(() => {
+                    console.log('FCM: Failed.')
+                })*/
+            })
+
+            navigator.serviceWorker.ready.then(() => {
+                console.log('Worker', 'Already started')
+                push_permission()
+            })
+        }else{
+            console.log('Service worker doesn\'t supported in this browser')
+        }
+
+        let push_permission = () => {
+            if(!'Notification' in window) return
+            Notification.requestPermission().then(res => {
+                messaging.getToken().then(token => {
+                    console.log('Device Token', token)
+                })
+                if(res === 'denied') {console.log('Notification: Denied'); return}
+                if(res === 'default') {console.log('Notification: Disabled by default'); return}
+
+                console.log('Notification: Granted')
+                if(!'PushManager' in window) return
+
+                console.log('Notification: PushManager is exist')
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    let notif_options = {
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array('BPEUw-_ZvYx7bbhbJODt9S4SEa1abryu4fjBPZuhMAgPJgBZs1pnSb6_1-ORvHbGidSlMgjteUdbDx9MHXKVD2E')
+                    }
+                    registration.pushManager.subscribe(notif_options).then(subscribe => {
+                        console.log('Notification', `Endpoint: ${subscribe.endpoint}`)
+                        console.log('Notification', `p256dh hash: ${btoa(String.fromCharCode.apply(null, new Uint8Array(subscribe.getKey('p256dh'))))}`)
+                        console.log('Notification', `auth hash: ${btoa(String.fromCharCode.apply(null, new Uint8Array(subscribe.getKey('auth'))))}`)
+                    })
+                })
+            })
+        }
+
+        let urlBase64ToUint8Array = (base64String) => {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+    </script>
+
+</body>
+</html>
