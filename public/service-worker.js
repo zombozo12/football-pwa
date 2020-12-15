@@ -1,6 +1,5 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js');
 
-const CACHE_NAME = 'football-pwa-v12'
 const CACHED_URLS = [
     { url: '/index.html', revision: '1' },
     { url: '/nav.html', revision: '1' },
@@ -67,47 +66,6 @@ if(workbox){
         })
     );
 }
-
-/*self.addEventListener('install', e => {
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('Worker: cache installed')
-            return cache.addAll(CACHED_URLS)
-        })
-    )
-})*/
-
-/*self.addEventListener('fetch', (event) => {
-    event.respondWith(async function () {
-        const cache = await caches.open(CACHE_NAME);
-        const cache_response = await cache.match(event.request);
-        if (cache_response) return cache_response;
-        const network_response = await fetch(event.request, {
-            headers: {
-                'X-Auth-Token': 'acc36affa0d04e94b97655c93a0856c9'
-            }
-        });
-        event.waitUntil(
-            cache.put(event.request, network_response.clone())
-        );
-        return network_response;
-    }());
-});
-
-self.addEventListener('activate', e => {
-    e.waitUntil(
-        caches.keys().then(names => {
-            return Promise.all(
-                names.map(name => {
-                    if(name !== CACHE_NAME){
-                        console.log(`Worker: ${name} deleted`)
-                        return caches.delete(name)
-                    }
-                })
-            )
-        })
-    )
-})*/
 
 self.addEventListener('push', e => {
     let body, options
