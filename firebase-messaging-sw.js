@@ -14,11 +14,17 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging()
 
 self.addEventListener('push', function (e) {
-    let body, options
+    let title, body, options
 
     if(e.data){
-        body = e.data.text()
-        console.log(body)
+        try{
+            let json = JSON.parse(e.data.text())
+            body = json.data.body
+            title = json.data.title
+        }catch(error){
+            title = 'Non-FCM Push Notification'
+            body = e.data.text()
+        }
     }else{
         body = 'Push Notification Message'
     }
@@ -34,7 +40,7 @@ self.addEventListener('push', function (e) {
     }
 
     e.waitUntil(
-        self.registration.showNotification('Push Notification', options)
+        self.registration.showNotification(title, options)
     )
 }, false)
 

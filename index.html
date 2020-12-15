@@ -28,12 +28,12 @@
 
     <!-- styles -->
     <link rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preconnect" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
     <nav class="blue lighten-1" role="navigation">
         <div class="nav-wrapper container">
-            <a href="/" class="brand-logo" id="logo-container">wigunarrr.dev</a>
+            <a href="#home" class="brand-logo" id="logo-container">wigunarrr.dev</a>
             <a href="#" class="sidenav-trigger" data-target="nav-mobile">☰</a>
 
             <ul class="topnav right hide-on-med-and-down"></ul>
@@ -53,24 +53,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-messaging.js"></script>
-    <script>
-        let firebaseConfig = {
-            apiKey: "AIzaSyA_u7j6coHrA_ir9KqND0ocegJf5Dsq_H8",
-            authDomain: "dicoding-pwa-wigunarrr.firebaseapp.com",
-            projectId: "dicoding-pwa-wigunarrr",
-            storageBucket: "dicoding-pwa-wigunarrr.appspot.com",
-            messagingSenderId: "790958902989",
-            appId: "1:790958902989:web:f60a1984e9c07843b9a384",
-            measurementId: "G-QFBWVR5W3H"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-
-        const messaging = firebase.messaging()
-        messaging.usePublicVapidKey('BGsp3j8F9q21PzAl94l_OXOrWuS3UPHJTXlt3jG1vwoWQAT5ONYf0AnoKn_F33UCiMrd2aMz2WIeu5py4W304xA')
-
-    </script>
+    <script src="/assets/js/fcm-config.js"></script>
     <script type="text/javascript" src="/node_modules/materialize-css/dist/js/materialize.min.js"></script>
     <script type="text/javascript" src="/node_modules/idb/lib/idb.js"></script>
     <script type="text/javascript" src="/assets/js/api.js"></script>
@@ -117,7 +100,8 @@
                 console.log('Notification: PushManager is exist')
                 navigator.serviceWorker.getRegistration().then(registration => {
                     let notif_options = {
-                        userVisibleOnly: true
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array('BPEUw-_ZvYx7bbhbJODt9S4SEa1abryu4fjBPZuhMAgPJgBZs1pnSb6_1-ORvHbGidSlMgjteUdbDx9MHXKVD2E')
                     }
                     registration.pushManager.subscribe(notif_options).then(subscribe => {
                         console.log('Notification', `Endpoint: ${subscribe.endpoint}`)
@@ -127,8 +111,20 @@
                 })
             })
         }
-    </script>
 
+        let urlBase64ToUint8Array = (base64String) => {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+    </script>
 
 </body>
 </html>

@@ -7,14 +7,6 @@ let matches = `${base_url}competitions/${LEAGUE_ID}/matches`
 let teams = `${base_url}competitions/${LEAGUE_ID}/teams`
 
 let fetch_api = (url) => {
-    if("caches" in window){
-        console.log("Fetch", 'caches found')
-        caches.match(url).then((response) => {
-            console.log('Fetch', 'Response: ' + response)
-            if(response) return response
-        })
-    }
-
     return fetch(url, {
         headers: {
             'X-Auth-Token': API_KEY
@@ -29,9 +21,7 @@ let status = (response) => {
     return Promise.resolve(response)
 }
 
-let json = (response) => {
-    return response.json()
-}
+let json = (response) => response.json()
 
 let error = (error) => {
     console.log(`API Error: ${error}`)

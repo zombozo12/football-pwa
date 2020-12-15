@@ -1,4 +1,4 @@
-const CACHE_NAME = 'football-pwa-v2'
+const CACHE_NAME = 'football-pwa-v12'
 const CACHED_URLS = [
     '/index.html',
     '/nav.html',
@@ -30,7 +30,8 @@ const CACHED_URLS = [
     '/assets/js/nav.js',
     '/assets/js/db.js',
     '/assets/js/master.js',
-    '/assets/js/api.js'
+    '/assets/js/api.js',
+    '/assets/js/fcm-config.js'
 ]
 
 self.addEventListener('install', e => {
@@ -42,97 +43,22 @@ self.addEventListener('install', e => {
     )
 })
 
-let network_cache = async (e) => {
-    const API_KEY = 'acc36affa0d04e94b97655c93a0856c9'
-    const LEAGUE_ID = 2021
-
-    const base_url = 'https://api.football-data.org/v2/'
-    let url_modified = ''
-    let standings = `${base_url}competitions/${LEAGUE_ID}/standings?standingType=TOTAL`
-    let matches = `${base_url}competitions/${LEAGUE_ID}/matches`
-    let teams = `${base_url}competitions/${LEAGUE_ID}/teams`
-
-    const url = new URL(e.request.url)
-    let page = url.hash.substr(1)
-    console.log(page)
-    switch(page){
-        case 'home':
-            url_modified = standings
-            break;
-        case 'matches':
-            url_modified = matches
-            break;
-        case 'teams':
-            url_modified = teams
-            break;
-    }
-
-    const cache = caches.default
-    let response = await caches.match(e.request)
-
-    if(!response){
-        response = await fetch(`${url_modified}`, {mode: 'no-cors'})
-        const headers = {'X-Auth-Token': API_KEY}
-        response = new Response(response.body, { ...response, headers})
-        e.waitUntil(cache.put(e.request, response.clone()))
-    }
-    return response
-}
-
-let local_cache = async (e) => {
-    if(e.request.method === 'GET'){
-        let response = await network_cache(e)
-        if(response.status > 399){
-            response = new Response(response.statusText, { status: response.status})
-        }
-        return response
-    }else{
-        return new Response('Method not allowed', {status: 405})
-    }
-}
-
-self.addEventListener('fetch', e => {
-    e.respondWith(local_cache(e))
-})
-
-/*self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        async function(e){
-            const cache = await caches.open(CACHE_NAME)
-            const cache_response = await cache.match(e.request.url, {ignoreSearch: true})
-            if(cache_response) return cache_response
-
-            try{
-                const network_response = await fetch(e.request)
-                await cache.put(e.request.url, network_response.clone())
-                console.log(e.request.url)
-                return network_response
-            }catch (e){
-                console.error('Worker', 'Fetch error: ' + e)
+self.addEventListener('fetch', (event) => {
+    event.respondWith(async function () {
+        const cache = await caches.open(CACHE_NAME);
+        const cache_response = await cache.match(event.request);
+        if (cache_response) return cache_response;
+        const network_response = await fetch(event.request, {
+            headers: {
+                'X-Auth-Token': 'acc36affa0d04e94b97655c93a0856c9'
             }
-        }()
-    )
-})*/
-
-/*self.addEventListener('fetch', e => {
-    let base_url = "https://api.football-data.org/v2/";
-    if (e.request.url.indexOf(base_url) > -1) {
-        e.respondWith(
-            caches.open(CACHE_NAME).then(function(cache) {
-                return fetch(e.request).then(function(response) {
-                    cache.put(e.request.url, response.clone())
-                    return response;
-                })
-            })
+        });
+        event.waitUntil(
+            cache.put(event.request, network_response.clone())
         );
-    } else {
-        e.respondWith(
-            caches.match(e.request, {ignoreSearch:true}).then(function(response) {
-                return response || fetch (e.request);
-            })
-        )
-    }
-})*/
+        return network_response;
+    }());
+});
 
 self.addEventListener('activate', e => {
     e.waitUntil(
