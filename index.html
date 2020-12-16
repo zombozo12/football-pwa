@@ -72,6 +72,12 @@
                 }).catch(() => {
                     console.log('Worker: Failed.')
                 })
+
+                navigator.serviceWorker.register('./firebase-messaging-sw.js').then(() => {
+                    console.log('Worker: Registered.')
+                }).catch(() => {
+                    console.log('Worker: Failed.')
+                })
             })
 
             navigator.serviceWorker.ready.then(() => {
